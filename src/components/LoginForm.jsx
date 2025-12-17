@@ -57,15 +57,25 @@ const LoginForm=()=>{
     console.log(username)
     console.log(password)
     return(
-        <div className="w-[400px] mt-50 mb-40 shadow-lg rounded-lg flex flex justify-center bg-gray-400 mx-auto">    
-            <form className="flex flex-col">
-                <h1 className="text-center text-2xl mt-2 font-bold">LOGIN</h1>
-                <input type="text" id="email" name="E-MAIL" placeholder="Username" value={username} className=" bg-gray-200 border-2 mt-5  rounded-lg p-3 w-full my-2 " onChange={handleNameChange}/>
-                <input type="password" id="pass"name="PASSWORD" placeholder="Password" value={password} className=" bg-gray-200 border-2  rounded-lg p-3 w-full my-2 "onChange={handlePasswordChange} ref={passwordRef}/>
-                 <input type="text" id="role" name="Role" placeholder="Role" value={role} className=" bg-gray-200 border-2 mt-5 text-lg rounded-lg pl-1 px-30 py-5 w-full my-2 " onChange={handleRoleChange}/>
-
-                <button className="bg-blue-500  hover:bg-blue-300 text-white m-2 mb-4 p-2 rounded-full" onClick={handleSubmit}>Login</button>
-            </form>
+        <div className="min-h-screen bg-black flex items-center justify-center p-6">
+            <div className="w-full max-w-md bg-slate-900 shadow-2xl rounded-2xl p-8 border border-slate-700">    
+                <form className="flex flex-col space-y-4">
+                    <h1 className="text-center text-3xl font-bold text-white mb-6">LOGIN</h1>
+                    <div>
+                        <label className="block text-sm font-medium text-slate-300 mb-1">Username</label>
+                        <input type="text" id="email" name="E-MAIL" placeholder="Enter username" value={username} className="bg-slate-800 border border-slate-700 text-white rounded-lg p-3 w-full focus:ring-2 focus:ring-blue-500 focus:border-transparent" onChange={handleNameChange}/>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-slate-300 mb-1">Password</label>
+                        <input type="password" id="pass" name="PASSWORD" placeholder="Enter password" value={password} className="bg-slate-800 border border-slate-700 text-white rounded-lg p-3 w-full focus:ring-2 focus:ring-blue-500 focus:border-transparent" onChange={handlePasswordChange} ref={passwordRef}/>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-slate-300 mb-1">Role</label>
+                        <input type="text" id="role" name="Role" placeholder="Enter role" value={role} className="bg-slate-800 border border-slate-700 text-white rounded-lg p-3 w-full focus:ring-2 focus:ring-blue-500 focus:border-transparent" onChange={handleRoleChange}/>
+                    </div>
+                    <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors shadow-lg mt-6" onClick={handleSubmit}>Login</button>
+                </form>
+            </div>
         </div>
     )
 }

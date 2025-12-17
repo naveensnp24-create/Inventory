@@ -13,7 +13,9 @@ import ProductDetails from './components/ProductDetails.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
 import AdminPage from './components/AdminPage.jsx'
 import Cart from './components/Cart.jsx'
+import Orders from './components/Orders.jsx'
 import { ToastContainer } from 'react-toastify'
+import { GlobalProvider } from './contexts/GlobalContext.jsx'
 
 
     const products = [
@@ -42,28 +44,29 @@ import { ToastContainer } from 'react-toastify'
     ]
 
 createRoot(document.getElementById('root')).render(
-    <>
-    <ToastContainer/>  
-    <BrowserRouter>
-        <Routes>
-            <Route path='/login' element={<LoginForm/>}/>
-            <Route element={<HomeLayout/>}>
-                
-                <Route path='/' element={<App/>}/>
-                <Route path="/products">
-                    <Route index element={<ProductList products={products}/>}/>
-                    <Route path=':id' element={<ProductDetails/>}/>
-                    <Route path='details' element={<ProductList/>}/>
+    <GlobalProvider>
+        <ToastContainer/>  
+        <BrowserRouter>
+            <Routes>
+                <Route path='/login' element={<LoginForm/>}/>
+                <Route element={<HomeLayout/>}>
+                    
+                    <Route path='/' element={<App/>}/>
+                    <Route path="/products">
+                        <Route index element={<ProductList products={products}/>}/>
+                        <Route path=':id' element={<ProductDetails/>}/>
+                        <Route path='details' element={<ProductList/>}/>
+                    </Route>
+                    <Route path='/About' element={<About/>}/>
+                    <Route path='/Contact' element={<Contact/>}/>
+                    <Route path='/Cart' element={<Cart/>}/>
+                    <Route path='/Orders' element={<Orders/>}/>
+                <Route path='/adminPage' element={<ProtectedRoute> <AdminPage/></ProtectedRoute>}/>
                 </Route>
-                <Route path='/About' element={<About/>}/>
-                <Route path='/Contact' element={<Contact/>}/>
-                <Route path='/Cart' element={<Cart/>}/>
-            <Route path='/adminPage' element={<ProtectedRoute> <AdminPage/></ProtectedRoute>}/>
-            </Route>
 
-            
-        </Routes>
-    </BrowserRouter>
-    </>
+                
+            </Routes>
+        </BrowserRouter>
+    </GlobalProvider>
 
 )

@@ -86,11 +86,10 @@ import EcommerceFooter from './components/EcommerceFooter';
 
 const App = () => {
   return (
-    <>
+    <div className="bg-black min-h-screen">
       <ProductList/>
-      
       <EcommerceFooter/>
-    </>
+    </div>
   );
 };
 export default App;
