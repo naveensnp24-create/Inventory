@@ -11,13 +11,17 @@ const ProductList = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/products");
+        setLoading(true);
+        // Replace with your deployed backend URL
+        const apiUrl = import.meta.env.VITE_API_URL || 'https://your-backend-url.railway.app';
+        const res = await axios.get(`${apiUrl}/products`);
         console.log('API Response:', res.data);
-        console.log('Products count:', res.data.length);
-        setProducts(res.data);
+        setProducts(res.data || []);
+        setError(null);
       } catch (err) {
-        setError(err.message);
         console.error('Error fetching products:', err);
+        setError('Failed to load products from database');
+        setProducts([]); // Ensure no fallback data
       } finally {
         setLoading(false);
       }
@@ -25,24 +29,41 @@ const ProductList = () => {
     fetchData();
   }, []);
 
-  if (loading) return <div className="text-white text-center p-8">Loading products...</div>;
-  if (error) return <div className="text-red-500 text-center p-8">Error: {error}</div>;
-  if (products.length === 0) return (
-    <div className="text-white text-center p-8">
-      <p>No products found in database</p>
-      <p>Try adding some products first using the Add Products page</p>
-    </div>
-  );
+  if (loading) {
+    return (
+      <div className="flex-col flex pb-100 bg-black">
+        <div className="text-white text-center p-8">Loading products from database...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex-col flex pb-100 bg-black">
+        <div className="text-red-500 text-center p-8">
+          <p>{error}</p>
+          <p>Make sure your backend is running and database is connected.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex-col flex pb-100 bg-black">
-      <div className="max-w-7xl mx-auto mt-4 mb-4 gap-3 bg-black grid grid-cols-4 px-4">
-        {products.map((product) => (
-          <div key={product._id} className="flex flex-col gap-2">
-            <ProductCard  id={product._id} name={product.name} price={product.price} image={product.image} />
-            {/* <OrderSummary key={product._id} product={product} /> */}
+      <div className="mx-auto my-auto mt-4 mb-4 gap-4 bg-black flex justify-center items-start flex-wrap">
+        {products.length === 0 ? (
+          <div className="text-white text-center p-8">
+            <p>No products found in database</p>
+            <p>Add some products using the Add Products page</p>
           </div>
-        ))}
+        ) : (
+          products.map((product) => (
+            <div key={product._id || product.id} className="flex flex-col gap-4">
+              <ProductCard id={product._id || product.id} name={product.name} price={product.price} image={product.image} />
+              <OrderSummary key={product._id || product.id} product={product} />
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
