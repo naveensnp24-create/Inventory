@@ -37,16 +37,16 @@ const Cart = () => {
             
             <div className="space-y-3 mb-6">
               {cartItems.map((item) => (
-                <div key={item.id} className="flex items-center gap-4 bg-slate-800 p-4 rounded-lg border border-slate-700">
+                <div key={item.productId || item.id} className="flex items-center gap-4 bg-slate-800 p-4 rounded-lg border border-slate-700">
                   <img src={item.image} alt={item.name} className="w-20 h-20 object-cover rounded" />
                   <div className="flex-1">
                     <h3 className="font-semibold text-lg text-white">{item.name}</h3>
                     <p className="text-slate-400 text-sm">${typeof item.price === 'string' ? item.price.replace(/[^0-9.-]+/g, '') : item.price} each</p>
                     <div className="flex items-center gap-2 mt-2">
-                      <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="bg-slate-700 text-white px-3 py-1 rounded hover:bg-slate-600">-</button>
+                      <button onClick={() => updateQuantity(item.productId || item.id, item.quantity - 1)} className="bg-slate-700 text-white px-3 py-1 rounded hover:bg-slate-600">-</button>
                       <span className="px-3 font-medium text-white">{item.quantity}</span>
-                      <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="bg-slate-700 text-white px-3 py-1 rounded hover:bg-slate-600">+</button>
-                      <button onClick={() => removeFromCart(item.id)} className="bg-red-600 text-white px-4 py-1 rounded ml-4 hover:bg-red-700">Remove</button>
+                      <button onClick={() => updateQuantity(item.productId || item.id, item.quantity + 1)} className="bg-slate-700 text-white px-3 py-1 rounded hover:bg-slate-600">+</button>
+                      <button onClick={() => removeFromCart(item.productId || item.id)} className="bg-red-600 text-white px-4 py-1 rounded ml-4 hover:bg-red-700">Remove</button>
                     </div>
                   </div>
                   <div className="text-right">

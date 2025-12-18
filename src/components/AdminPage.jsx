@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const AdminPage = () => {
     const [name, setName] = useState('');
@@ -17,57 +18,75 @@ const AdminPage = () => {
             image
         };
 
-        const response = await axios.post('http://localhost:3000/products', productData);
-        
-        alert('Product added successfully!');
-        setName('');
-        setPrice('');
-        setImage('');
-        setLoading(false);
+        try {
+            const response = await axios.post('http://localhost:3000/products', productData, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            toast.success('Product added successfully!');
+            setName('');
+            setPrice('');
+            setImage('');
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Failed to add product');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
-        <>
-            <div className="flex flex-col mt-40 ml-130 rounded-xl bg-gray-400 shadow-2xl h-[500px] w-[500px] py-20 flex justify-center">
-                <h1 className="flex mb-5 justify-center mt-1 text-3xl mb-6 font-bold">Add Product</h1>
-                <form onSubmit={handleSubmit} className="flex flex-col items-center justify-center">
-                    <input 
-                        type="text" 
-                        placeholder="Product Name" 
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        className="border-2 rounded-lg text-lg hover:bg-slate-400 border-black mb-3 mx-7 p-5 w-80"
-                        required
-                        disabled={loading}
-                    />
-                    <input 
-                        type="number" 
-                        placeholder="Product Price" 
-                        value={price}
-                        onChange={(e) => setPrice(e.target.value)}
-                        className="border-2 rounded-lg text-lg hover:bg-slate-400 border-black mb-3 mx-7 p-5 w-80"
-                        required
-                        disabled={loading}
-                    />
-                    <input 
-                        type="text" 
-                        placeholder="Product Image URL" 
-                        value={image}
-                        onChange={(e) => setImage(e.target.value)}
-                        className="border-2 rounded-lg text-lg hover:bg-slate-400 border-black mb-6 mx-7 p-5 w-80"
-                        required
-                        disabled={loading}
-                    />
+        <div className="min-h-screen bg-black flex items-center justify-center p-6">
+            <div className="w-full max-w-md bg-slate-900 shadow-2xl rounded-2xl p-8 border border-slate-700">
+                <h1 className="text-center text-3xl font-bold text-white mb-6">Add Product</h1>
+                <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
+                    <div>
+                        <label className="block text-sm font-medium text-slate-300 mb-1">Product Name</label>
+                        <input 
+                            type="text" 
+                            placeholder="Enter product name" 
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            className="bg-slate-800 border border-slate-700 text-white rounded-lg p-3 w-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            required
+                            disabled={loading}
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-slate-300 mb-1">Price</label>
+                        <input 
+                            type="number" 
+                            placeholder="Enter price" 
+                            value={price}
+                            onChange={(e) => setPrice(e.target.value)}
+                            className="bg-slate-800 border border-slate-700 text-white rounded-lg p-3 w-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            required
+                            disabled={loading}
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-slate-300 mb-1">Image URL</label>
+                        <input 
+                            type="text" 
+                            placeholder="Enter image URL" 
+                            value={image}
+                            onChange={(e) => setImage(e.target.value)}
+                            className="bg-slate-800 border border-slate-700 text-white rounded-lg p-3 w-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            required
+                            disabled={loading}
+                        />
+                    </div>
                     <button 
                         type="submit" 
                         disabled={loading}
-                        className="bg-blue-500 hover:bg-blue-700 disabled:bg-blue-300 text-white mb-3 mx-20 font-bold p-5 rounded-lg w-48"
+                        className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-3 rounded-lg transition-colors shadow-lg mt-6"
                     >
                         {loading ? 'Adding...' : 'Add Product'}
                     </button>
                 </form>
             </div>
-        </>
+        </div>
     );
 };
 

@@ -1,15 +1,13 @@
 import {createContext,useState,useEffect} from "react";
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 const GlobalContext=createContext();
 
 export const GlobalProvider=(props)=>{
     const{children}=props;
     const[currentPage,setCurrentPage]=useState(1);
-    const[cartItems,setCartItems]=useState(() => {
-        const saved = localStorage.getItem('cartItems');
-        return saved ? JSON.parse(saved) : [];
-    });
+    const[cartItems,setCartItems]=useState([]);
     const[showCheckout,setShowCheckout]=useState(false);
     const[orders,setOrders]=useState(() => {
         const saved = localStorage.getItem('orders');
@@ -20,36 +18,60 @@ export const GlobalProvider=(props)=>{
         localStorage.setItem('orders', JSON.stringify(orders));
     }, [orders]);
     
+    // Load cart from MongoDB on component mount
     useEffect(() => {
-        localStorage.setItem('cartItems', JSON.stringify(cartItems));
-    }, [cartItems]);
+        loadCart();
+    }, []);
     
-    const addToCart = (product) => {
-        setCartItems(prev => {
-            const existingItem = prev.find(item => item.id === product.id);
-            if (existingItem) {
-                toast.success('Product quantity updated in cart!');
-                return prev.map(item => 
-                    item.id === product.id 
-                        ? { ...item, quantity: item.quantity + 1 }
-                        : item
-                );
-            }
+    const loadCart = async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/cart', {
+                headers: { 'user-id': 'guest' }
+            });
+            setCartItems(response.data.items || []);
+        } catch (error) {
+            console.error('Error loading cart:', error);
+        }
+    };
+    
+    const addToCart = async (product) => {
+        try {
+            const response = await axios.post('http://localhost:3000/cart', product, {
+                headers: { 'user-id': 'guest' }
+            });
+            setCartItems(response.data.items);
             toast.success('Product added to cart successfully!');
-            return [...prev, { ...product, quantity: 1 }];
-        });
+        } catch (error) {
+            toast.error('Failed to add product to cart');
+            console.error('Error adding to cart:', error);
+        }
     };
     
-    const updateQuantity = (id, quantity) => {
+    const updateQuantity = async (id, quantity) => {
         if (quantity < 1) return;
-        setCartItems(prev => prev.map(item => 
-            item.id === id ? { ...item, quantity } : item
-        ));
+        try {
+            const response = await axios.put('http://localhost:3000/cart', 
+                { id, quantity },
+                { headers: { 'user-id': 'guest' } }
+            );
+            setCartItems(response.data.items);
+        } catch (error) {
+            toast.error('Failed to update cart');
+            console.error('Error updating cart:', error);
+        }
     };
     
-    const removeFromCart = (id) => {
-        setCartItems(prev => prev.filter(item => item.id !== id));
-        toast.success('Product removed from cart!');
+    const removeFromCart = async (id) => {
+        try {
+            const response = await axios.delete(`http://localhost:3000/cart/${id}`, {
+                headers: { 'user-id': 'guest' }
+            });
+            setCartItems(response.data.items);
+            toast.success('Product removed from cart!');
+        } catch (error) {
+            toast.error('Failed to remove product from cart');
+            console.error('Error removing from cart:', error);
+        }
     };
     
     const placeOrder = (customerDetails) => {
